@@ -3,11 +3,24 @@
 import { deleteImage } from "@/actions/imageController";
 import Link from "next/link";
 import { CldImage } from "next-cloudinary";
+import { useEffect, useState } from "react";
 
 export default function Image(props) {
   if (!props.image.photo) {
     props.image.photo = "https://res.cloudinary.com/do4psnh2f/image/upload/v1741782993/Image-not-found_zemvfx.png";
   }
+
+  const [fontSize, setFontSize] = useState(32);
+
+  useEffect(() => {
+    function handleResize() {
+      setFontSize(window.innerWidth < 768 ? 80 : 32);
+    }
+    
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div className="relative rounded-xl overflow-hidden max-w-[650px] mx-auto mb-7">
@@ -19,6 +32,7 @@ export default function Image(props) {
 
       <CldImage
         className="absolute inset-0"
+        alt="Image"
         width="650"
         height="300"
         src={props.image.photo}
@@ -35,7 +49,7 @@ export default function Image(props) {
             },
             text: {
               text: `${props.image.line1}\n${props.image.line2}\n${props.image.line3}`,
-              fontSize: 32,
+              fontSize: fontSize,
               fontFamily: "Source Sans Pro",
               fontWeight: "bold",
               color: "black",
@@ -50,7 +64,7 @@ export default function Image(props) {
             },
             text: {
               text: `${props.image.line1}\n${props.image.line2}\n${props.image.line3}`,
-              fontSize: 32,
+              fontSize: fontSize,
               fontFamily: "Source Sans Pro",
               fontWeight: "bold",
               color: "white",
